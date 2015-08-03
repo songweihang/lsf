@@ -50,15 +50,15 @@ function _M:run(_g)
     end
 
     --查询数据库
-	local ok,data = fun:query(sql,'mysql_slave')
-	if ok == 200 then
-		if  _g['sys_mctime'] ~= 0  then
-			fun:m_set(mem_key,data,_g['sys_mctime'])
-		end
-		ngx.print(data)
-	else
-		ngx.print('{"ok":"no","status":"502"}')
-	end
+    local ok,data = fun:query(sql,'mysql_slave')
+    if ok == 200 then
+	    if  _g['sys_mctime'] ~= 0  then
+		    fun:m_set(mem_key,data,_g['sys_mctime'])
+	    end
+	    ngx.print(data)
+    else
+	    ngx.print('{"ok":"no","status":"502"}')
+    end
 
     if is_lock == 1 then
         local ok, err = lock:unlock()

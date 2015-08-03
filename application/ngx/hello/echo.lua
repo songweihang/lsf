@@ -1,7 +1,7 @@
 local _M = {}
 
 function _M:run(_g)
-    ngx.say('hi ngx_lua')
+    ngx.say('<b>hello web-lua-api</b>')
 end
 
 return _M
