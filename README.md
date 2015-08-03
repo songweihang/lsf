@@ -2,7 +2,7 @@
 
 整合了web开发中基础的应用组件，以及提高编写openresty的api效率
 
-#安装
+##安装
 下载以及详细安装教程 [openresty](http://openresty.org/#Installation)
 
 ##编译过程
@@ -22,9 +22,9 @@
  make
  make install
   ```
-#说明
-lua.cnf是nginx配置文件，里面包含有各种服务的配置地址可以根据自行情况更改
-lua.cnf 项目地址是 /opt/local/ngxconf/web-lua-api/    你可以根据自己放置的位置进行配置
-app 应用配置文件放在web-lua-api/application/config.lua 可以自行配置默认只有redis配置
-配置完毕执行 nginx reload  && curl "http://web-lua-api.cn/"
-输出 hello web-lua-api 表示安装成功
+##说明
+- lua.cnf是nginx配置文件，里面包含有各种服务的配置地址可以根据自行情况更改
+- lua.cnf 项目地址是 /opt/local/ngxconf/web-lua-api/    你可以根据自己放置的位置进行配置
+- app 应用配置文件放在web-lua-api/application/config.lua 可以自行配置默认只有redis配置
+- 配置完毕执行 nginx reload  && curl "http://web-lua-api.cn/"
+- 输出 hello web-lua-api 表示安装成功
