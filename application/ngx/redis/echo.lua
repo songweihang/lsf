@@ -1,0 +1,1 @@
+local _M = {}function _M:run(_g)    local redis = require "resty.redis_com"    local red = redis:new()    red:set('dog','get dog')    local ok, err = red:get('dog')    ngx.say(ok)endreturn _M
