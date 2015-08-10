@@ -1,12 +1,11 @@
 -- Copyright (C) 2015 Chen Jakin VERSION 0.3
+--package.path = '/opt/local/ngxconf/web-lua-api/application/?.lua;;'
 
 fun = require "resty.function"
-cjson = require "cjson";
-
-main = require "main";
+local init = require "core.init";
 
 local function app()
-    main:run()
+    init:run()
 end
 
 local b, msg = pcall(app)

@@ -1,5 +1,8 @@
 local _M = {}
 
+local function tappend(t, v) t[#t+1] = v end
+local sgsub = string.gsub
+
 function _M:get_request()
 
     local api_cmd = "ngx.hello.echo"
@@ -43,6 +46,47 @@ function _M:merge_request(GET,POST)
         end
     end
     return _g
+end
+
+local Routes = {}
+Routes.dispatchers = {}
+
+function _M:add(method, pattern, route_info)
+    local pattern, params = self:build_named_parameters(pattern)
+
+    pattern = "^" .. pattern .. "/???$"
+
+    route_info.controller = route_info.controller .. "_controller"
+    route_info.params = params
+    ngx.say(fun:dump(route_info))
+    --tappend(self.routes.dispatchers[self.number], { pattern = pattern, [method] = route_info })
+end
+
+function _M:build_named_parameters(pattern)
+    local params = {}
+    local new_pattern = sgsub(pattern, "/:([A-Za-z0-9_]+)", function(m)
+        tappend(params, m)
+        return "/([A-Za-z0-9_]+)"
+    end)
+    return new_pattern, params
+end
+
+local supported_http_methods = {
+    GET = true,
+    POST = true,
+    HEAD = true,
+    OPTIONS = true,
+    PUT = true,
+    PATCH = true,
+    DELETE = true,
+    TRACE = true,
+    CONNECT = true
+}
+
+for http_method, _ in pairs(supported_http_methods) do
+    _M[http_method] = function(self, pattern, route_info)
+        self:add(http_method, pattern, route_info)
+    end
 end
 
 function _M:run()
