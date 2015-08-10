@@ -1,6 +1,6 @@
 # lsf
 
-整合了web开发中基础的应用组件，以及提高编写openresty的api效率
+lua server framework整合了web开发中基础的应用组件,实现了基于版本号http Resty 接口
 
 ##安装
  Install [openresty](http://openresty.org/#Installation)
@@ -26,6 +26,22 @@
   ```
  lua.cnf是nginx配置文件，里面包含有各种服务的配置地址可以根据自行情况更改
  lua.cnf 项目地址是 /opt/local/ngxconf/web-lua-api/    你可以根据自己放置的位置进行配置
- 配置完毕执行 nginx reload  && curl "http://web-lua-api.cn/"
- 输出 hello web-lua-api 表示安装成功
   ```
+##路由配置
+  ```lua
+  local routes = require 'core.routes'
+
+  local v1 = routes.version(1)
+
+  v1:GET("/users", { controller = "users", action = "index" })
+  v1:POST("/users", { controller = "users", action = "create" })
+  v1:GET("/users/:id/:cid", { controller = "users", action = "show" })
+
+  return routes
+  ```
+  
+##http请求
+  ```shell
+  curl 'http://web-lua-api.cn/api/v1/users/1/11'
+  ```
+
