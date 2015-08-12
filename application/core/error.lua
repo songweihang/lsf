@@ -15,6 +15,8 @@ local function init_errors()
     errors[102] = { status = 412, message = "Unsupported version specified in the Accept header." }
     errors[103] = { status = 400, message = "Could not parse JSON in body." }
     errors[104] = { status = 400, message = "Body should be a JSON hash." }
+    errors[105] = { status = 400, message = "mysql Database exception" }
+    errors[106] = { status = 400, message = "Parameter error" }
 
     return errors
 end
@@ -22,7 +24,7 @@ end
 Error.list = init_errors()
 
 function Error.new(code, custom_attrs)
-    
+
     local err = Error.list[code]
     if err == nil then error("invalid error code") end
 

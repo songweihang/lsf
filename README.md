@@ -31,17 +31,22 @@ lua server framework整合了web开发中基础的应用组件,实现了基于�
   ```lua
   local routes = require 'core.routes'
 
+  -- 自定义api 版本号
   local v1 = routes.version(1)
+  local v2 = routes.version(2)
 
-  v1:GET("/users", { controller = "users", action = "index" })
-  v1:POST("/users", { controller = "users", action = "create" })
-  v1:GET("/users/:id/:cid", { controller = "users", action = "show" })
+  v1:POST("/mysql/getQuery", { controller = "mysql", action = "getQuery" })
+  v1:GET("/mysql/getQuery", { controller = "mysql", action = "getQuery" })
+
+  v1:POST("/mysql/inQuery", { controller = "mysql", action = "inQuery" })
 
   return routes
   ```
   
 ##http请求
   ```shell
-  curl 'http://web-lua-api.cn/api/v1/users/1/11'
+  执行 ./application/api/v1/mysql_controller.lua 中的getQuery方法
+  curl -d"sql=SELECT * FROM gyh.circle limit 1"  'http://web-lua-api.cn/api/v1/mysql/getQuery
+
   ```
 

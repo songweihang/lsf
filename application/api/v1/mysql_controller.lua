@@ -4,8 +4,11 @@ function _M:getQuery()
 
     local lock = require "resty.lock"
 	local sql = self.request.POST.sql
+	if sql == nil then
+        return 106
+    end
 	
-	local is_lock = tonumber(self.request.POST.is_lock)
+    local is_lock = tonumber(self.request.POST.is_lock)
 	if	is_lock == nil then
         is_lock = 0
     end
