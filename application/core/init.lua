@@ -12,7 +12,6 @@ local sgsub = string.gsub
 local smatch = string.match
 local jencode = json.encode
 
-
 local function create_request(ngx)
     local ok, request_or_error = pcall(function() return Request.new(ngx) end)
     return request_or_error
