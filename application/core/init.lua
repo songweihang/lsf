@@ -1,68 +1,25 @@
-local _M = {}
 
+local json = require 'cjson'
 local Controller = require 'core.controller'
 local Response = require 'core.response'
+local Request = require 'core.request'
+local Error = require 'core.error'
+
+local init = {}
+
 local function tappend(t, v) t[#t+1] = v end
 local sgsub = string.gsub
 local smatch = string.match
---local sgsub = ngx.re.gsub 
---local smatch = ngx.re.match
-local routes = {}
-routes.dispatchers = {}
-routes.dispatchers[1]  = {}
+local jencode = json.encode
 
-function _M:add(method, pattern, route_info)
-    local pattern, params = self:build_named_parameters(pattern)
 
-    pattern = "^" .. pattern .. "/???$"
-
-    route_info.controller = route_info.controller .. "_controller"
-    route_info.params = params
-    
-    tappend(routes.dispatchers[1], { pattern = pattern, [method] = route_info })
-end
-
-function _M:build_named_parameters(pattern)
-    local params = {}
-    local new_pattern = sgsub(pattern, "/:([A-Za-z0-9_]+)", function(m)
-        tappend(params, m)
-        return "/([A-Za-z0-9_]+)"
-    end)
-    return new_pattern, params
-end
-
-local supported_http_methods = {
-    GET = true,
-    POST = true,
-    HEAD = true,
-    OPTIONS = true,
-    PUT = true,
-    PATCH = true,
-    DELETE = true,
-    TRACE = true,
-    CONNECT = true
-}
-
-for http_method, _ in pairs(supported_http_methods) do
-    _M[http_method] = function(self, pattern, route_info)
-        self:add(http_method, pattern, route_info)
-    end
-end
-
-function _M.request(ngx)
-
-    --构建请求路径
-    local http_match, err = ngx.re.match(ngx.var.uri, "/api/v([1-9]+)/(.*)")
-    request = {}
-    request.api_version = http_match[1]
-    request.method = ngx.var.request_method
-    request.uri = '/' .. http_match[2]
-
-    return request
+local function create_request(ngx)
+    local ok, request_or_error = pcall(function() return Request.new(ngx) end)
+    return request_or_error
 end
 
 -- match request to routes
-function _M.match(request)
+function init.match(request)
     
     local uri = request.uri
     local method = request.method
@@ -96,22 +53,53 @@ function _M.match(request)
     end
 end
 
-function _M.call_controller(request, controller_name, action, params)
-     -- load matched controller and set metatable to new instance of controller
+function init.call_controller(request, controller_name, action, params)
+
     local matched_controller = require(controller_name)
     local controller_instance = Controller.new(request, params)
     setmetatable(matched_controller, { __index = controller_instance })
-
-    -- call action
+    -- 执行 action
     local ok, status_or_error, body, headers = pcall(function() return matched_controller[action](matched_controller) end)
-    ngx.print(body)
+
+    local response
+
+    if ok then
+        if status_or_error == 200 then
+
+            ngx.print(body)
+            return
+        else
+
+            local err = Error.new(status_or_error)
+            response = Response.new({ status = err.status, body = err.body })
+            init.respond(ngx, response)
+            return false
+        end
+    else
+        error(status_or_error)
+    end
+
 end
 
-function _M:run()
+function init.respond(ngx, response)
 
-    request = _M.request(ngx)
-    controller_name, action, params, request = _M.match(request)
-    _M.call_controller(request, controller_name, action, params)
+    ngx.status = response.status
+
+    for k, v in pairs(response.headers) do
+        ngx.header[k] = v
+    end
+
+    local json_body = jencode(response.body)
+    
+    ngx.header["Content-Length"] = ngx.header["Content-Length"] or ngx.header["content-length"] or json_body:len()
+    ngx.print(json_body)
 end
 
-return _M
+function init:run()
+
+    local request = create_request(ngx)
+    controller_name, action, params, request = init.match(request)
+    init.call_controller(request, controller_name, action, params)
+end
+
+return init
