@@ -1,6 +1,6 @@
 # lsf
 
-lua server framework整合了web开发中基础的应用组件,实现了基于版本号http Resty 接口
+lua server framework整合了web开发中基础的应用组件,实现RESTful
 
 ##安装
  Install [openresty](http://openresty.org/#Installation)
@@ -39,6 +39,8 @@ lua server framework整合了web开发中基础的应用组件,实现了基于�
   v1:GET("/mysql/getQuery", { controller = "mysql", action = "getQuery" })
 
   v1:POST("/mysql/inQuery", { controller = "mysql", action = "inQuery" })
+
+  v2:GET("/mysql/getQuery", { controller = "mysql", action = "getQuery" })
 
   return routes
   ```
