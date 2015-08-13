@@ -17,7 +17,9 @@ local function init_errors()
     errors[104] = { status = 400, message = "Body should be a JSON hash." }
     errors[105] = { status = 400, message = "mysql Database exception" }
     errors[106] = { status = 400, message = "Parameter error" }
+    errors[107] = { status = 400, message = "Service exception" }
 
+    errors[500] = { status = 400, message = "Service exception" }
     return errors
 end
 

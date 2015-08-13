@@ -44,7 +44,19 @@ lua server framework整合了web开发中基础的应用组件,实现RESTful
 
   return routes
   ```
-  
+##访问控制
+  ```lua
+  --服务访问控制列表 可以指定访问ip
+  local iputils = require("resty.iputils")
+  iputils.enable_lrucache()
+  local whitelist_ips = {
+    "127.0.0.1",
+    "10.10.10.0/24",
+    "192.168.0.0/16",
+  }
+  whitelist = iputils.parse_cidrs(whitelist_ips)
+  ```
+
 ##http请求
   ```shell
   执行 ./application/api/v1/mysql_controller.lua 中的getQuery方法

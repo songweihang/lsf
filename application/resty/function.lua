@@ -47,6 +47,10 @@ function _M:dump(o)
     end                                                                         
 end
 
+function _M:trim(s)
+    return (s:gsub("^%s*(.-)%s*$", "%1"))
+end
+
 function _M:json_decode(str)
     local data = nil
     _, err = pcall(function(str) return json.decode(str) end, str)
