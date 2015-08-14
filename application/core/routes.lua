@@ -14,8 +14,8 @@ local Version = {}
 Version.__index = Version
 
 function Version.new(routes, number)
-    if type(number) ~= 'number' then error("version is not an integer number (got string).") end
-    if smatch(tostring(number), "%.") ~= nil then error("version is not an integer number (got float).") end
+    if type(number) ~= 'number' then error("api版本号只能为number") end
+    if smatch(tostring(number), "%.") ~= nil then error("api版本号不能为float") end
 
     local instance = {
         routes = routes,
@@ -72,7 +72,7 @@ Routes.dispatchers = {}
 function Routes.version(number)
     local version = Version.new(Routes, number)
 
-    if Routes.dispatchers[number] then error("version has already been defined (got " .. number .. ").") end
+    if Routes.dispatchers[number] then error("版本号已经被定义(v " .. number .. ").") end
     Routes.dispatchers[number] = {}
 
     return version

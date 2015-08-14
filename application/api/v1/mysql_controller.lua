@@ -2,11 +2,11 @@ local _M = {}
 
 -- 从库执行sql
 function _M:getQuery()
-
+    
     local lock = require "resty.lock"
 	local sql = self.request.POST.sql
 	if sql == nil then
-        return 106
+        return 101
     end
 	
     local is_lock = tonumber(self.request.POST.is_lock)
@@ -33,7 +33,7 @@ function _M:getQuery()
         local lock = lock:new("cache_locks")
         local elapsed, err = lock:lock(mem_key)
         if not elapsed then
-            return 107,fail("failed to acquire the lock: ", err)
+            return 102
         end
 
         local ok,data = fun:m_get(mem_key)
@@ -43,7 +43,7 @@ function _M:getQuery()
                 --获取到缓冲数据进行解锁
                 local ok, err = lock:unlock()
                 if not ok then
-                    return 107 , fail("failed to unlock: ", err)
+                    return 102 
                 end
 
                 return 200 ,data
@@ -57,14 +57,12 @@ function _M:getQuery()
 		if  sys_mctime ~= 0  then
 			fun:m_set(mem_key,data,sys_mctime)
 		end
-	else
-		data = '{"ok":"no","status":"502"}'
 	end
 
     if is_lock == 1 then
         local ok, err = lock:unlock()
         if not ok then
-            return 107 , fail("failed to unlock: ", err)
+            return 102
         end
     end
 
@@ -76,7 +74,7 @@ function _M:inQuery(_g)
 
     local sql = self.request.POST.sql
     if sql == nil then
-        return 106
+        return 101
     end
 
     --执行修改数据库

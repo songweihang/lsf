@@ -10,16 +10,10 @@ Error.__index = Error
 local function init_errors()
 
     errors = {}
-    errors[100] = { status = 412, message = "Accept header not set." }
-    errors[101] = { status = 412, message = "Invalid Accept header format." }
-    errors[102] = { status = 412, message = "Unsupported version specified in the Accept header." }
-    errors[103] = { status = 400, message = "Could not parse JSON in body." }
-    errors[104] = { status = 400, message = "Body should be a JSON hash." }
-    errors[105] = { status = 400, message = "mysql Database exception" }
-    errors[106] = { status = 400, message = "Parameter error" }
-    errors[107] = { status = 400, message = "Service exception" }
-
-    errors[500] = { status = 400, message = "Service exception" }
+    errors[101] = { status = 400, message = "请求参数异常" }
+    errors[102] = { status = 400, message = "后端服务执行异常" }
+    
+    errors[500] = { status = 500, message = "mysql Database 请求sql查询异常" }
     return errors
 end
 
