@@ -1,8 +1,8 @@
 local _M = {}
 
 function _M:show()
-	
-    return 200,'<b>hello lsf</b>'
+	local jit_version = jit.version
+    return 200,jit_version
 end
 
 return _M

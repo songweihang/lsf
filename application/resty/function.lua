@@ -57,4 +57,13 @@ function _M:json_decode(str)
     return data, err
 end
 
+function nul2nil(value)
+
+    if value == ngx.null then
+        return nil
+    end
+
+    return value
+end
+
 return _M
