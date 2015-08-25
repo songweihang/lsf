@@ -2,9 +2,9 @@ local _M = {}
 
 function _M:show()
 	
-	--local jit_version = jit.version
+	local jit_version = jit.version
 	local data = {}
-	data.jit_version = 1
+	data.jit_version = jit_version
     return 200,data
 end
 

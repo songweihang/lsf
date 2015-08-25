@@ -10,7 +10,9 @@ Error.__index = Error
 local function init_errors()
 
     errors = {}
+
     errors[200] = { status = 200, message = "成功" }
+
     errors[101] = { status = 200, message = "请求参数异常" }
     errors[102] = { status = 400, message = "后端服务执行异常" }
     errors[504] = { status = 200, message = "mysql查询超时自动退出" }
@@ -34,6 +36,7 @@ function Error.new(code, custom_attrs)
     --if custom_attrs ~= nil then
     --    for k,v in pairs(custom_attrs) do body['body'][k] = v end
     --end
+
 
     local instance = {
         status = err.status,
