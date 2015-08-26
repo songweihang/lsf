@@ -82,9 +82,6 @@ end
 -- execute query on db
 local function db_execute(options, db, sql)
     local res, err, errno, sqlstate = db:query(sql)
-
-    --if not res then error("bad mysql result: " .. err .. ": " .. errno .. " " .. sqlstate) end
-    -- return
     return res, err, errno, sqlstate
 end
 

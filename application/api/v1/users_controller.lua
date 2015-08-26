@@ -1,5 +1,7 @@
 local _M = {}
 
+local function quote(str) return ngx.quote_sql_str(str) end
+
 function _M:show()
 	
 	local jit_version = jit.version
@@ -10,16 +12,11 @@ end
 
 function _M:demo()
 
-	local MySql = require 'db.mysql'
-    local SqlOrm = require 'db.sql.orm'
-
-    Users = SqlOrm.define_model(MySql, 'post_all')
+	local orm = require 'db.sql.mysql.orm'.new('gyh',quote)
     data = {}
-    data.post_id1 = 111
-    data.addtime = 12312312
-    local ok,users = Users.where("")
-
-    return ok,users
+    data.first_name = 'gin' 
+    local sql = orm.create(data)
+    return 200,sql
 end
 
 return _M

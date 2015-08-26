@@ -63,7 +63,6 @@ lua server framework整合了web开发中基础的应用组件,实现RESTful
   curl -d"sql=SELECT * FROM gyh.circle limit 1"  'http://web-lua-api.cn/api/v1/mysql/getQuery
 
   ```
-<<<<<<< HEAD
 ###压力测试
   ```shell 
   root# ab -c 50 -n 10000 http://lsf.yd.com/api/v1/jit/show

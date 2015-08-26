@@ -55,6 +55,7 @@ end
 
 
 function SqlCommonOrm:create(attrs)
+    
     -- health check
     if attrs == nil or next(attrs) == nil then
         error("no attributes were specified to create new model instance")
