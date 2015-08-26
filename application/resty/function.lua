@@ -2,17 +2,6 @@
 
 local _M = {}
 
-function _M:query(sql,db_link)
-	local data = ngx.location.capture("/query?db_link=" .. db_link .. "&sql=" .. sql )
-	if data.status ~= ngx.HTTP_OK then
-		local tid = data.header["X-Mysql-Tid"]
-		if tid and tid ~= "" then
-			ngx.location.capture("/kill", { args = {tid = tid,db_link = db_link} })
-		end
-	end
-	return data.status,data.body
-end
-
 function _M:m_set(key,val,exptime)
 	local data = ngx.location.capture("/mem",{ args = {cmd = "set",key = key,val = val,exptime = exptime} } )
 	return data.status,data.body

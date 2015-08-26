@@ -32,6 +32,7 @@ local function mysql_connect(options)
         password = options.password,
         max_packet_size = max_packet_size
     }
+
     local ok, err, errno, sqlstate = db:connect(db_options)
     if not ok then error("failed to connect to mysql: " .. err .. ": " .. errno .. " " .. sqlstate) end
     -- return
@@ -49,36 +50,6 @@ function MySql.quote(options, str)
     return ngx.quote_sql_str(str)
 end
 
--- return list of tables
-function MySql.tables(options)
-    local res = MySql.execute(options, "SHOW TABLES IN " .. options.database .. ";")
-    local tables = {}
-
-    for _, v in pairs(res) do
-        for _, table_name in pairs(v) do
-            tappend(tables, table_name)
-        end
-    end
-
-    return tables
-end
-
--- return schema as a table
-function MySql.schema(options)
-    local Migration = require 'gin.db.sql.migrations'
-    local schema = {}
-
-    local tables = MySql.tables(options)
-    for i, table_name in ipairs(tables) do
-        if table_name ~= Migration.migrations_table_name then
-            local columns_info = MySql.execute(options, "SHOW COLUMNS IN " .. table_name .. ";")
-            tappend(schema, { [table_name] = columns_info })
-        end
-    end
-
-    return schema
-end
-
 -- execute query on db
 local function db_execute(options, db, sql)
     local res, err, errno, sqlstate = db:query(sql)
@@ -87,6 +58,7 @@ end
 
 -- execute a query
 function MySql.execute(options, sql)
+
     -- get db object
     local db = mysql_connect(options)
     -- execute query

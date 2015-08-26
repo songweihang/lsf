@@ -1,7 +1,5 @@
 local _M = {}
 
-local function quote(str) return ngx.quote_sql_str(str) end
-
 function _M:show()
 	
 	local jit_version = jit.version
@@ -12,11 +10,8 @@ end
 
 function _M:demo()
 
-	local orm = require 'db.sql.mysql.orm'.new('gyh',quote)
-    data = {}
-    data.first_name = 'gin' 
-    local sql = orm.create(data)
-    return 200,sql
+	local mysql = require 'db.mysql'
+	return mysql:inQuery("INSERT INTO `test`.`cms_model` (`id`, `name`, `source_url`) VALUES (NULL, '1', '1');")
 end
 
 return _M

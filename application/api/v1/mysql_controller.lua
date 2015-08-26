@@ -1,4 +1,5 @@
 local _M = {}
+local mysql = require 'db.mysql'
 
 -- 从库执行sql
 function _M:getQuery()
@@ -52,7 +53,7 @@ function _M:getQuery()
     end
 
     --查询数据库
-	local ok,data = fun:query(sql,'mysql_slave')
+	local ok,data = mysql:getQuery(sql)
 	if ok == 200 then
 		if  sys_mctime ~= 0  then
 			fun:m_set(mem_key,data,sys_mctime)
@@ -78,7 +79,7 @@ function _M:inQuery(_g)
     end
 
     --执行修改数据库
-    local ok,data = fun:query(sql,'mysql_master')
+    local ok,data = mysql:inQuery(sql)
     if ok == 200 then
         return ok ,data
     else
