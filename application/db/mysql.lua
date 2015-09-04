@@ -1,48 +1,26 @@
 ---mysql链接类支持主从分离
 -- @classmod db.mysql
 -- @release 0.1
-local modulename = "dbMysql"
+local modulename    = "dbMysql"
 
-local dbMysql = { }
-dbMysql.__index = dbMysql
-
-local next = next
-local error = error
-local ipairs = ipairs
-local pairs = pairs
-local require = require
-local tonumber = tonumber
-local setmetatable = setmetatable
-local tconcat = table.concat
-local type = type
+local confInit      = require 'conf.init'
+local mysql_adapter = require "db.sql.mysql.adapter"
+local next          = next
+local error         = error
+local ipairs        = ipairs
+local pairs         = pairs
+local require       = require
+local tonumber      = tonumber
+local setmetatable  = setmetatable
+local tconcat       = table.concat
+local type          = type
 local function tappend(t, v) t[#t+1] = v end
 local function quote(str) return ngx.quote_sql_str(str) end
 
-local run_db_link = ''
-local db_link = {}
 
-local master_db_options = {
 
-        adapter = 'mysql',
-        host = "127.0.0.1",
-        port = 3306,
-        database = "test",
-        user = "root",
-        password = "",
-        pool = 5
-}
-
-local slave_db_options = {
-
-        adapter = 'mysql',
-        host = "127.0.0.1",
-        port = 3306,
-        database = "test",
-        user = "root",
-        password = "",
-        pool = 5
-}
-
+local dbMysql   = { }
+dbMysql.__index = dbMysql
 
 -- field and values helper
 local function field_and_values(quote, attrs, concat)
@@ -75,16 +53,30 @@ local function build_where(sql, attrs)
     end
 end
 
-local mysql_adapter = require "db.sql.mysql.adapter"
-
 function dbMysql:getQuery(sql)
     
-    return mysql_adapter.execute(slave_db_options,sql) 
+    return mysql_adapter.execute(confInit.mysql_slave_conf,sql) 
 end
 
 function dbMysql:inQuery(sql)
     
-    return mysql_adapter.execute(master_db_options,sql) 
+    return mysql_adapter.execute(confInit.mysql_master_conf,sql) 
+end
+
+function dbMysql:getQueryFind(sql)
+    
+    local sql = sql .. ' LIMIT 1'
+    local ok,res = mysql_adapter.execute(confInit.mysql_slave_conf,sql)
+    if ok == 200 then
+        return ok,res[1]
+    else
+        return ok,res       
+    end
+
+end
+
+function dbMysql:find_by(table_name,attrs,options)
+
 end
 
 function dbMysql:where(table_name,attrs,options)
@@ -116,7 +108,7 @@ function dbMysql:where(table_name,attrs,options)
     -- close
     tappend(sql, ";")
     -- execute
-    return mysql_adapter.execute(slave_db_options,tconcat(sql))
+    return dbMysql:getQuery(tconcat(sql))
 end
 
 function dbMysql:save(table_name,attrs)
@@ -144,7 +136,7 @@ function dbMysql:save(table_name,attrs)
     tappend(sql, ");")
     -- hit server
     -- master_db_options
-    return mysql_adapter.execute_and_return_last_id(master_db_options,tconcat(sql))
+    return dbMysql:inQuery(tconcat(sql))
     --return 200,tconcat(sql)
 end
 
@@ -166,7 +158,29 @@ function dbMysql:update_where(table_name,attrs, where_attrs)
     -- close
     tappend(sql, ";")
     -- execute
-    return tconcat(sql)
+    return dbMysql:inQuery(tconcat(sql))
+end
+
+function dbMysql:delete_where(table_name,attrs, options)
+    -- init sql
+    local sql = {}
+    -- start
+    tappend(sql, "DELETE FROM ")
+    tappend(sql, table_name)
+    -- where
+    build_where(sql, attrs)
+    -- options
+    if options then
+        -- limit
+        if options.limit ~= nil then
+            tappend(sql, " LIMIT ")
+            tappend(sql, options.limit)
+        end
+    end
+    -- close
+    tappend(sql, ";")
+    -- execute
+    return dbMysql:inQuery(tconcat(sql))
 end
 
 return dbMysql

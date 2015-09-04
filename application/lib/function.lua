@@ -1,5 +1,3 @@
--- Copyright (C) 2015 Chen Jakin (宋伟航)
-
 local _M = {}
 
 function _M:dump(o)
@@ -24,8 +22,6 @@ end
 function _M:trim(s)
     return (s:gsub("^%s*(.-)%s*$", "%1"))
 end
-
-
 
 function nul2nil(value)
 

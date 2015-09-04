@@ -16,6 +16,7 @@ v1:GET("/test/demo", { controller = "users", action = "demo" })
 -- MYSQL 接口
 v1:POST("/mysql/getQuery", { controller = "mysql", action = "getQuery" })
 v1:GET("/mysql/getQuery", { controller = "mysql", action = "getQuery" })
+v1:POST("/mysql/getQueryFind", { controller = "mysql", action = "getQueryFind" })
 v1:POST("/mysql/inQuery", { controller = "mysql", action = "inQuery" })
 
 

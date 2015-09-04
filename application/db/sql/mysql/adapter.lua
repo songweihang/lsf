@@ -63,12 +63,12 @@ function MySql.execute(options, sql)
     local db = mysql_connect(options)
     -- execute query
     local res, err, errno, sqlstate = db_execute(options, db, sql)
-    -- keepalive
-    mysql_keepalive(db, options)
 
     if not res then 
-        return 500,"bad mysql result: " .. err .. ": " .. errno .. " " .. sqlstate
+        return 103,"bad mysql result: " .. err 
     end
+    -- keepalive
+    mysql_keepalive(db, options)
     -- return
     return 200,res
 end
@@ -81,7 +81,7 @@ function MySql.execute_and_return_last_id(options, sql)
     -- execute query
     local res, err, errno, sqlstate = db_execute(options, db, sql)
     if not res then 
-        return 500,"bad mysql result: " .. err .. ": " .. errno .. " " .. sqlstate
+        return 103,"bad mysql result: " .. err .. ": " .. errno .. " " .. sqlstate
     end
     -- get last id
     local res = db_execute(options, db, "SELECT LAST_INSERT_ID() AS id;")

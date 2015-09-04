@@ -9,9 +9,21 @@ function _M:show()
 end
 
 function _M:demo()
+	
+	local redis = require'lib.cache.redis'
+	local red = redis:new()
+	ok, err = red:set("dog", "an animal")
+    if not ok then
+        ngx.say("failed to set dog: ", err)
+        return
+    end
 
-	local mysql = require 'db.mysql'
-	return mysql:inQuery("INSERT INTO `test`.`cms_model` (`id`, `name`, `source_url`) VALUES (NULL, '1', '1');")
+    local res, err = red:get("dog")
+    if not res then
+        ngx.say("failed to get dog: ", err)
+        return
+    end
+	return 200,res
 end
 
 return _M
