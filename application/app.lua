@@ -1,7 +1,7 @@
 -- Copyright (C) 2015 Chen Jakin VERSION 0.3
 --package.path = '/opt/local/ngxconf/web-lua-api/application/?.lua;;'
 
-fun = require "resty.function"
+fun = require "lib.function"
 local init = require "core.init";
 
 local function app()
