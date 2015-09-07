@@ -65,7 +65,6 @@ end
 
 function dbMysql:getQueryFind(sql)
     
-    local sql = sql .. ' LIMIT 1'
     local ok,res = mysql_adapter.execute(confInit.mysql_slave_conf,sql)
     if ok == 200 then
         return ok,res[1]

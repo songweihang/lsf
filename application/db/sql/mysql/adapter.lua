@@ -34,15 +34,20 @@ local function mysql_connect(options)
     }
 
     local ok, err, errno, sqlstate = db:connect(db_options)
-    if not ok then error("failed to connect to mysql: " .. err .. ": " .. errno .. " " .. sqlstate) end
-    -- return
-    return db
+    if not ok then 
+        return 103,"failed to connect to mysql: " .. err 
+    end
+    return db,nil
 end
 
 local function mysql_keepalive(db, options)
     -- put it into the connection pool
     local ok, err = db:set_keepalive(max_idle_timeout, options.pool)
-    if not ok then error("failed to set mysql keepalive: ", err) end
+    --if not ok then error("failed to set mysql keepalive: ", err) end
+    if not ok then
+        ngx.say("failed to set keepalive: ", err)
+        return
+    end
 end
 
 -- quote
@@ -52,15 +57,16 @@ end
 
 -- execute query on db
 local function db_execute(options, db, sql)
-    local res, err, errno, sqlstate = db:query(sql)
-    return res, err, errno, sqlstate
+    return db:query(sql)
 end
 
 -- execute a query
 function MySql.execute(options, sql)
 
     -- get db object
-    local db = mysql_connect(options)
+    local db ,err = mysql_connect(options)
+
+    if db == 103 then return 103,err end
     -- execute query
     local res, err, errno, sqlstate = db_execute(options, db, sql)
 
@@ -76,12 +82,12 @@ end
 -- execute a query and return the last ID
 function MySql.execute_and_return_last_id(options, sql)
     -- get db object
-    local db = mysql_connect(options)
-
+    local db,err = mysql_connect(options)
+    if db == 103 then return 103,err end
     -- execute query
     local res, err, errno, sqlstate = db_execute(options, db, sql)
     if not res then 
-        return 103,"bad mysql result: " .. err .. ": " .. errno .. " " .. sqlstate
+        return 103,"bad mysql result: " .. err
     end
     -- get last id
     local res = db_execute(options, db, "SELECT LAST_INSERT_ID() AS id;")
