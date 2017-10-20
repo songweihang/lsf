@@ -2,10 +2,10 @@
 
 lua server framework整合了web开发中基础的应用组件,实现RESTful
 
-##安装
+## 安装
  Install [openresty](http://openresty.org/#Installation)
 
-##编译过程
+## 编译过程
   ```shell
  安装drizzle_module模块所需要的依赖
  wget http://agentzh.org/misc/nginx/drizzle7-2011.07.21.tar.gz
@@ -22,12 +22,12 @@ lua server framework整合了web开发中基础的应用组件,实现RESTful
  make
  make install
   ```
-##注意事项
+## 注意事项
   ```
  lua.cnf是nginx配置文件，里面包含有各种服务的配置地址可以根据自行情况更改
  lua.cnf 项目地址是 /opt/local/ngxconf/web-lua-api/    你可以根据自己放置的位置进行配置
   ```
-##路由配置
+## 路由配置
   ```lua
   local routes = require 'core.routes'
 
@@ -57,13 +57,13 @@ lua server framework整合了web开发中基础的应用组件,实现RESTful
   whitelist = iputils.parse_cidrs(whitelist_ips)
   ```
 
-##http请求
+## http请求
   ```shell
   执行 ./application/api/v1/mysql_controller.lua 中的getQuery方法
   curl -d"sql=SELECT * FROM gyh.circle limit 1"  'http://web-lua-api.cn/api/v1/mysql/getQuery
 
   ```
-###压力测试
+### 压力测试
   ```shell 
   root# ab -c 50 -n 10000 http://lsf.yd.com/api/v1/jit/show
   This is ApacheBench, Version 2.3 <$Revision: 655654 $>
